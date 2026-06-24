@@ -266,34 +266,38 @@ function renderContent(){
     var items=DATA[s.id];
     if(s.id==="fill"){
       items.forEach(function(d,i){
-        html+='<div class="card collapsed">';
-        html+='<div class="card-q" onclick="toggleCollapse(this)"><span class="card-num">'+(i+1)+'</span>'+d.q+'<span class="q-arrow">&#9660;</span></div>';
-        html+='<div class="card-body"><button class="fill-toggle" onclick="toggleFill(this)">查看答案</button>';
-        html+='<div class="fill-answer"><div class="ans-label">Answer</div>'+d.a+'</div></div>';
-        html+='</div>';
+        html+='<div class="card">';
+        html+='<div class="card-q" onclick="toggleCollapse(this.parentElement)"><span class="card-num">'+(i+1)+'</span><span>'+d.q+'</span><span class="q-arrow">&#9660;</span></div>';
+        html+='<div class="card-body">';
+        html+='<button class="fill-toggle" onclick="toggleFill(this)">查看答案</button>';
+        html+='<div class="fill-answer"><div class="ans-label">Answer</div>'+d.a+'</div>';
+        html+='</div></div>';
       });
     }else if(s.id==="term"){
       items.forEach(function(d,i){
-        html+='<div class="card collapsed">';
-        html+='<div class="card-q" onclick="toggleCollapse(this)"><span class="card-num">'+(i+1)+'</span>'+d.q+'<span class="q-arrow">&#9660;</span></div>';
-        html+='<div class="card-body"><button class="fill-toggle" onclick="toggleFill(this)">查看答案</button>';
-        html+='<div class="fill-answer"><div class="ans-label">Answer</div>'+d.a+'</div></div>';
-        html+='</div>';
+        html+='<div class="card">';
+        html+='<div class="card-q" onclick="toggleCollapse(this.parentElement)"><span class="card-num">'+(i+1)+'</span><span>'+d.q+'</span><span class="q-arrow">&#9660;</span></div>';
+        html+='<div class="card-body">';
+        html+='<button class="fill-toggle" onclick="toggleFill(this)">查看答案</button>';
+        html+='<div class="fill-answer"><div class="ans-label">Answer</div>'+d.a+'</div>';
+        html+='</div></div>';
       });
     }else if(s.id==="short"||s.id==="complex"){
       items.forEach(function(d,i){
-        html+='<div class="card collapsed">';
-        html+='<div class="card-q" onclick="toggleCollapse(this)"><span class="card-num">'+(i+1)+'</span>'+d.q+'<span class="q-arrow">&#9660;</span></div>';
-        html+='<div class="card-body"><button class="fill-toggle" onclick="toggleFill(this)">查看答案</button>';
-        html+='<div class="fill-answer"><div class="ans-label">Answer</div>'+d.a.replace(/\n/g,'<br>')+'</div></div>';
-        html+='</div>';
+        html+='<div class="card">';
+        html+='<div class="card-q" onclick="toggleCollapse(this.parentElement)"><span class="card-num">'+(i+1)+'</span><span>'+d.q+'</span><span class="q-arrow">&#9660;</span></div>';
+        html+='<div class="card-body">';
+        html+='<button class="fill-toggle" onclick="toggleFill(this)">查看答案</button>';
+        html+='<div class="fill-answer"><div class="ans-label">Answer</div>'+d.a.replace(/\n/g,'<br>')+'</div>';
+        html+='</div></div>';
       });
     }else if(s.id==="choice"){
       var letters="ABCD";
       items.forEach(function(d,i){
-        html+='<div class="card collapsed">';
-        html+='<div class="card-q" onclick="toggleCollapse(this)"><span class="card-num">'+(i+1)+'</span>'+d.q+'<span class="q-arrow">&#9660;</span></div>';
-        html+='<div class="card-body"><div class="opts">';
+        html+='<div class="card">';
+        html+='<div class="card-q" onclick="toggleCollapse(this.parentElement)"><span class="card-num">'+(i+1)+'</span><span>'+d.q+'</span><span class="q-arrow">&#9660;</span></div>';
+        html+='<div class="card-body">';
+        html+='<div class="opts">';
         d.o.forEach(function(opt,j){
           html+='<div class="opt clickable" data-qi="'+i+'" data-oi="'+j+'">'+opt+'</div>';
         });
@@ -305,13 +309,14 @@ function renderContent(){
   c.innerHTML=html;
 }
 
-function toggleCollapse(q){
-  q.closest(".card").classList.toggle("collapsed");
-}
 function toggleFill(btn){
   var ans=btn.nextElementSibling;
   ans.classList.toggle("show");
   btn.textContent=ans.classList.contains("show")?"收起答案":"查看答案";
+}
+
+function toggleCollapse(card){
+  card.classList.toggle("collapsed");
 }
 
 var choiceAnswered={};
