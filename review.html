@@ -269,9 +269,8 @@ function renderContent(){
         html+='<div class="hide-content">';
         html+='<button class="fill-toggle" onclick="toggleFill(this)">查看答案</button>';
         html+='<div class="fill-answer"><div class="ans-label">Answer</div>'+d.a+'</div>';
-        html+='</div>';
         html+='<button class="hide-btn" onclick="toggleHide(this)">隐藏答案</button>';
-        html+='</div>';
+        html+='</div></div>';
       });
     }else if(s.id==="term"){
       items.forEach(function(d,i){
@@ -280,9 +279,8 @@ function renderContent(){
         html+='<div class="hide-content">';
         html+='<button class="fill-toggle" onclick="toggleFill(this)">查看答案</button>';
         html+='<div class="fill-answer"><div class="ans-label">Answer</div>'+d.a+'</div>';
-        html+='</div>';
         html+='<button class="hide-btn" onclick="toggleHide(this)">隐藏答案</button>';
-        html+='</div>';
+        html+='</div></div>';
       });
     }else if(s.id==="short"||s.id==="complex"){
       items.forEach(function(d,i){
@@ -291,9 +289,8 @@ function renderContent(){
         html+='<div class="hide-content">';
         html+='<button class="fill-toggle" onclick="toggleFill(this)">查看答案</button>';
         html+='<div class="fill-answer"><div class="ans-label">Answer</div>'+d.a.replace(/\n/g,'<br>')+'</div>';
-        html+='</div>';
         html+='<button class="hide-btn" onclick="toggleHide(this)">隐藏答案</button>';
-        html+='</div>';
+        html+='</div></div>';
       });
     }else if(s.id==="choice"){
       var letters="ABCD";
@@ -305,9 +302,9 @@ function renderContent(){
         d.o.forEach(function(opt,j){
           html+='<div class="opt clickable" data-qi="'+i+'" data-oi="'+j+'">'+opt+'</div>';
         });
-        html+='</div></div>';
-        html+='<button class="hide-btn" onclick="toggleHide(this)">隐藏选项</button>';
         html+='</div>';
+        html+='<button class="hide-btn" onclick="toggleHide(this)">隐藏选项</button>';
+        html+='</div></div>';
       });
     }
     html+='</div>';
