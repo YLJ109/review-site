@@ -305,7 +305,7 @@ function toggleFill(btn){
 }
 
 var choiceAnswered={};
-document.getElementById("quiz").addEventListener("click",function(e){
+document.getElementById("content").addEventListener("click",function(e){
   var t=e.target.closest("[data-oi]");
   if(!t)return;
   var qi=t.getAttribute("data-qi"),oi=+t.getAttribute("data-oi");
