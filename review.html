@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>期末重点复习 - 数据预处理</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root[data-theme="dark"]{
+  --bg:#0f0f1a;--bg2:#16162a;--surface:rgba(255,255,255,.04);--surface2:rgba(255,255,255,.07);
+  --card:rgba(255,255,255,.04);--card-border:rgba(255,255,255,.08);--card-hover:rgba(255,255,255,.07);
+  --text:#e8e8f0;--text2:rgba(255,255,255,.55);--text3:rgba(255,255,255,.3);
+  --accent:#6c5ce7;--accent2:#a29bfe;--accent-glow:rgba(108,92,231,.25);
+  --green:#00b894;--green-bg:rgba(0,184,148,.08);--green-border:rgba(0,184,148,.2);
+  --orange:#fdcb6e;--orange-bg:rgba(253,203,110,.08);--orange-border:rgba(253,203,110,.2);
+  --pink:#fd79a8;--pink-bg:rgba(253,121,168,.08);--pink-border:rgba(253,121,168,.2);
+  --cyan:#00cec9;--cyan-bg:rgba(0,206,201,.08);--cyan-border:rgba(0,206,201,.2);
+  --blue:#74b9ff;--blue-bg:rgba(116,185,255,.08);--blue-border:rgba(116,185,255,.2);
+  --scrollbar-thumb:rgba(255,255,255,.1);--scrollbar-track:transparent;
+}
+:root[data-theme="light"]{
+  --bg:#f5f5f7;--bg2:#fff;--surface:rgba(0,0,0,.03);--surface2:rgba(0,0,0,.05);
+  --card:rgba(255,255,255,.9);--card-border:rgba(0,0,0,.08);--card-hover:rgba(255,255,255,1);
+  --text:#1a1a2e;--text2:rgba(0,0,0,.55);--text3:rgba(0,0,0,.3);
+  --accent:#6c5ce7;--accent2:#7c6cf7;--accent-glow:rgba(108,92,231,.15);
+  --green:#00a882;--green-bg:rgba(0,168,130,.06);--green-border:rgba(0,168,130,.2);
+  --orange:#e17055;--orange-bg:rgba(225,112,85,.06);--orange-border:rgba(225,112,85,.2);
+  --pink:#e84393;--pink-bg:rgba(232,67,147,.06);--pink-border:rgba(232,67,147,.2);
+  --cyan:#00b4d8;--cyan-bg:rgba(0,180,216,.06);--cyan-border:rgba(0,180,216,.2);
+  --blue:#0984e3;--blue-bg:rgba(9,132,227,.06);--blue-border:rgba(9,132,227,.2);
+  --scrollbar-thumb:rgba(0,0,0,.12);--scrollbar-track:transparent;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Noto Sans SC','Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;transition:background .4s,color .4s}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--scrollbar-track)}
+::-webkit-scrollbar-thumb{background:var(--scrollbar-thumb);border-radius:3px}
+
+.app{max-width:900px;margin:0 auto;padding:32px 20px 80px}
+
+/* HEADER */
+.header{text-align:center;padding:40px 0 32px;position:relative}
+.header h1{font-size:30px;font-weight:700;letter-spacing:-.5px;background:linear-gradient(135deg,var(--text) 0%,var(--accent2) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:6px}
+.header p{color:var(--text2);font-size:13px;font-weight:300;letter-spacing:.5px}
+.header::after{content:'';display:block;width:48px;height:2px;margin:20px auto 0;background:linear-gradient(90deg,transparent,var(--accent),transparent);border-radius:1px}
+
+/* THEME TOGGLE */
+.theme-btn{position:fixed;top:20px;right:20px;z-index:100;width:44px;height:44px;border-radius:12px;border:1px solid var(--card-border);background:var(--card);color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;transition:all .3s;backdrop-filter:blur(20px)}
+.theme-btn:hover{background:var(--surface2);color:var(--text);border-color:var(--accent);box-shadow:0 0 20px var(--accent-glow)}
+
+/* NAV */
+.nav{position:sticky;top:0;z-index:50;padding:12px 0;margin-bottom:24px;background:var(--bg);transition:background .4s}
+.nav-inner{display:flex;gap:6px;padding:4px;background:var(--surface);border-radius:12px;border:1px solid var(--card-border);overflow-x:auto;scrollbar-width:none}
+.nav-inner::-webkit-scrollbar{display:none}
+.nav-btn{padding:10px 20px;border-radius:8px;border:none;background:transparent;color:var(--text2);font-size:13px;font-weight:500;cursor:pointer;transition:all .25s;white-space:nowrap;font-family:inherit;flex-shrink:0}
+.nav-btn:hover{color:var(--text);background:var(--surface2)}
+.nav-btn.active{color:#fff;background:var(--accent);box-shadow:0 2px 12px var(--accent-glow)}
+
+/* SECTION */
+.section{display:none;animation:fadeUp .4s ease}
+.section.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+.sec-title{display:flex;align-items:center;gap:12px;margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--card-border)}
+.sec-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.sec-icon.fill{background:var(--green-bg);border:1px solid var(--green-border);color:var(--green)}
+.sec-icon.term{background:var(--orange-bg);border:1px solid var(--orange-border);color:var(--orange)}
+.sec-icon.short{background:var(--pink-bg);border:1px solid var(--pink-border);color:var(--pink)}
+.sec-icon.complex{background:var(--cyan-bg);border:1px solid var(--cyan-border);color:var(--cyan)}
+.sec-icon.choice{background:var(--blue-bg);border:1px solid var(--blue-border);color:var(--blue)}
+.sec-title h2{font-size:20px;font-weight:600;letter-spacing:-.3px}
+.sec-title .count{font-size:12px;color:var(--text3);margin-left:auto;font-weight:400}
+
+/* CARDS */
+.card{background:var(--card);border:1px solid var(--card-border);border-radius:14px;padding:22px 26px;margin-bottom:10px;transition:all .3s;backdrop-filter:blur(20px);position:relative;overflow:hidden}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.04),transparent)}
+.card:hover{border-color:var(--surface2);background:var(--card-hover)}
+.card-num{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:8px;background:var(--surface2);font-size:12px;font-weight:600;flex-shrink:0;color:var(--text2);margin-right:10px;vertical-align:middle}
+.card-q{font-size:15px;line-height:1.8;color:var(--text);font-weight:400}
+.card-a{margin-top:12px;padding:14px 18px;border-radius:10px;font-size:13px;line-height:1.8;color:var(--text2);background:var(--green-bg);border:1px solid var(--green-border)}
+.card-a .ans-label{font-size:11px;font-weight:600;color:var(--green);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+
+/* OPTIONS (for choice) */
+.opts{display:flex;flex-direction:column;gap:6px;margin-top:14px}
+.opt{padding:10px 16px;border-radius:8px;border:1px solid var(--card-border);font-size:14px;line-height:1.6;color:var(--text2);transition:all .2s}
+.opt:hover{background:var(--surface);border-color:var(--surface2)}
+.opt-letter{font-weight:600;color:var(--accent2);margin-right:8px}
+.opt.is-ans{border-color:var(--green);background:var(--green-bg);color:var(--text)}
+.opt.is-ans .opt-letter{color:var(--green)}
+
+/* FILL answer toggle */
+.fill-toggle{display:inline-flex;align-items:center;gap:6px;margin-top:10px;padding:6px 14px;border-radius:20px;border:1px solid var(--card-border);background:var(--surface);color:var(--text2);font-size:12px;cursor:pointer;transition:all .2s;font-family:inherit}
+.fill-toggle:hover{border-color:var(--accent);color:var(--accent2)}
+.fill-answer{display:none;margin-top:10px;padding:12px 16px;border-radius:10px;background:var(--green-bg);border:1px solid var(--green-border);font-size:13px;line-height:1.7;color:var(--text2)}
+.fill-answer.show{display:block}
+
+/* FOOTER */
+.footer{text-align:center;padding:32px 0;color:var(--text3);font-size:12px;border-top:1px solid var(--card-border);margin-top:32px}
+
+@media(max-width:600px){
+  .app{padding:16px 14px 80px}
+  .header h1{font-size:22px}
+  .header{padding:28px 0 24px}
+  .card{padding:16px 18px}
+  .nav-btn{padding:8px 14px;font-size:12px}
+  .sec-title h2{font-size:17px}
+  .theme-btn{top:14px;right:14px;width:38px;height:38px;font-size:16px}
+}
+</style>
+</head>
+<body>
+<button class="theme-btn" id="themeBtn" title="切换主题">&#9789;</button>
+
+<div class="app">
+  <div class="header">
+    <h1>期末重点复习</h1>
+    <p>Data Preprocessing - 数据预处理</p>
+  </div>
+
+  <div class="nav"><div class="nav-inner" id="navBar"></div></div>
+
+  <div id="content"></div>
+
+  <div class="footer">数据预处理 期末复习 &middot; 共 78 题</div>
+</div>
+
+<script>
+var SECTIONS=[
+{id:"choice",label:"单选题",icon:"&#9898;",iconCls:"choice",count:30},
+{id:"fill",label:"填空题",icon:"&#9998;",iconCls:"fill",count:20},
+{id:"term",label:"名词解释",icon:"&#128214;",iconCls:"term",count:10},
+{id:"short",label:"简答题",icon:"&#128221;",iconCls:"short",count:8},
+{id:"complex",label:"综合题",icon:"&#128736;",iconCls:"complex",count:10}
+];
+
+var DATA={
+choice:[
+{q:"以下哪种工具适合采集动态网页数据，可模拟浏览器渲染行为？",o:["A、requests","B、Selenium","C、XPath","D、BeautifulSoup"],a:1},
+{q:"网络数据采集过程中，用于识别网页中目标数据位置的是",o:["A、HTTP协议","B、延时请求","C、CSS选择器","D、Cookie"],a:2},
+{q:"下列哪项不属于网络数据采集的核心环节？",o:["A、连接建立","B、数据提取","C、数据建模","D、数据存储"],a:2},
+{q:"为避免采集请求过于频繁被目标网站封禁，可采取的措施是",o:["A、关闭浏览器","B、增加延时请求","C、更换IP地址","D、清除Cookie"],a:1},
+{q:"Kafka中，负责接收生产者发送的消息并写入磁盘的组件是",o:["A、消费者","B、主题（Topic）","C、分区（Partition）","D、消费者组"],a:1},
+{q:"下列关于Kafka消息特性的描述，错误的是",o:["A、消息具有顺序性","B、支持消息持久化","C、消息不可重复消费","D、支持集群部署"],a:2},
+{q:"Kafka中，实现消息分片存储与并行处理的是",o:["A、生产者","B、分区（Partition）","C、副本","D、消费者组"],a:1},
+{q:"用于保证Kafka集群故障时消息不丢失的机制是",o:["A、顺序消费","B、副本（Replication）","C、分区存储","D、消息持久化"],a:1},
+{q:"Canal的工作原理是模拟MySQL的哪种角色，监听数据库变更？",o:["A、主库（Master）","B、从库（Slave）","C、客户端","D、服务器"],a:1},
+{q:"Maxwell解析MySQL数据库变更数据的依据是",o:["A、日志文件","B、二进制日志（binlog）","C、配置文件","D、数据表结构"],a:1},
+{q:"以下哪种工具适合采集简单静态网页数据，轻量且易用？",o:["A、Selenium","B、requests","C、Puppeteer","D、Scrapy"],a:1},
+{q:"网络数据采集需遵守的核心协议是",o:["A、TCP协议","B、UDP协议","C、HTTP协议","D、IP协议"],a:2},
+{q:"对于需要登录的网站，采集数据时通常需要模拟哪种信息获取访问权限？",o:["A、IP地址","B、登录状态（Cookie/Session）","C、浏览器版本","D、操作系统"],a:1},
+{q:"下列哪项是网络数据采集的常见风险？",o:["A、数据冗余","B、被目标网站封禁","C、数据格式错误","D、数据丢失"],a:1},
+{q:"Kafka中，负责从主题中读取消息并消费的组件是",o:["A、生产者","B、消费者","C、分区","D、副本"],a:1},
+{q:"Canal和Maxwell都可采集哪种数据库的变更数据？",o:["A、Oracle","B、MySQL","C、MongoDB","D、SQL Server"],a:1},
+{q:"Maxwell支持将解析后的数据发送至下列哪种消息中间件？",o:["A、RabbitMQ","B、Kafka","C、RocketMQ","D、以上都支持"],a:3},
+{q:"下列关于ELK组件的描述，错误的是",o:["A、Elasticsearch支持全文检索","B、Logstash负责日志转发","C、Kibana负责日志采集","D、Filebeat轻量且资源消耗低"],a:2},
+{q:"用于辅助采集日志，轻量且适合分布式部署的工具是",o:["A、Logstash","B、Filebeat","C、Kibana","D、Elasticsearch"],a:1},
+{q:"Elasticsearch实现全文检索的核心是",o:["A、倒排索引","B、正排索引","C、哈希索引","D、二叉树索引"],a:0},
+{q:"Kibana可通过哪种方式展示日志分析结果？",o:["A、命令行","B、可视化图表","C、文本文件","D、数据库表"],a:1},
+{q:"Kettle中，用于定义数据输入、转换与输出逻辑的是",o:["A、作业（Job）","B、转换（Transformation）","C、步骤","D、连接"],a:1},
+{q:"下列哪项是Kettle的核心功能？",o:["A、日志采集","B、消息队列","C、数据抽取、转换与加载","D、全文检索"],a:2},
+{q:"Kettle中，作业（Job）的主要作用是",o:["A、处理单个数据转换任务","B、管理多个转换，实现复杂流程","C、建立数据库连接","D、清洗数据"],a:1},
+{q:"下列关于Kettle的描述，正确的是",o:["A、只支持关系型数据库","B、不支持动态数据转换","C、开源且免费","D、只能在Windows系统运行"],a:2},
+{q:"下列关于Canal和Maxwell的对比，错误的是",o:["A、两者都可采集MySQL数据变更","B、Maxwell部署更轻量","C、Canal不支持全量同步","D、两者都可将数据发送至Kafka"],a:2},
+{q:"Canal默认发送数据库变更数据的格式是",o:["A、XML","B、JSON","C、CSV","D、TXT"],a:1},
+{q:"ELK日志采集技术栈中，负责采集和转发日志的组件是",o:["A、Elasticsearch","B、Logstash","C、Kibana","D、Filebeat"],a:1},
+{q:"用于存储和检索日志数据，支持全文检索的ELK组件是",o:["A、Elasticsearch","B、Logstash","C、Kibana","D、Filebeat"],a:0},
+{q:"ELK栈中，Kibana的主要功能是",o:["A、采集日志","B、存储日志","C、日志可视化与分析","D、转发日志"],a:2}
+],
+fill:[
+{q:"网络数据采集的核心环节包括____和____，其中前者负责建立与目标服务器的连接，后者负责提取所需数据。",a:"连接建立；数据提取"},
+{q:"常用的网络数据采集工具中，____适合简单静态页面采集，____支持动态页面爬取，可模拟浏览器渲染行为。",a:"requests；Selenium"},
+{q:"Kafka的核心组件包括____、____和消费者组，三者协同实现消息的生产、存储与消费。",a:"生产者；主题"},
+{q:"Kafka中，消息被存储在____中，每个该组件可分为多个____，实现消息的分片存储与并行处理。",a:"主题；分区"},
+{q:"Canal的工作原理是模拟MySQL的____，监听数据库的变更操作；Maxwell则基于____解析MySQL的二进制日志，获取数据变更。",a:"从库；binlog"},
+{q:"Canal默认将解析后的数据库变更数据以____格式发送，Maxwell支持将数据发送至Kafka、____等消息中间件。",a:"JSON；Redis"},
+{q:"ELK日志采集技术栈中，E代表____，负责采集和转发日志；L代表____，负责存储和检索日志数据。",a:"Elasticsearch；Logstash"},
+{q:"ELK栈中，K（Kibana）的主要功能是____和____，帮助用户直观展示和分析日志数据。",a:"日志可视化；数据统计分析"},
+{q:"Kettle工具中，____用于定义数据处理的流程，____用于定义数据的输入、转换与输出逻辑。",a:"作业；转换"},
+{q:"Kettle的核心操作包括____和____，前者用于数据的抽取与加载，后者用于数据的清洗与转换。",a:"抽取与加载；清洗与转换"},
+{q:"网络数据采集需遵守____协议，避免非法采集；对于需要登录的网站，通常需要模拟____获取访问权限。",a:"HTTP；登录状态"},
+{q:"网络数据采集时，____用于识别网页的结构和数据位置，____可避免采集请求过于频繁导致被目标网站封禁。",a:"XPath/CSS选择器；延时请求"},
+{q:"Kafka中，____负责接收生产者发送的消息并写入磁盘，____负责从该组件中读取消息并消费。",a:"主题；消费者"},
+{q:"Kafka的消息具有____特性，确保消息被顺序消费；____机制可保证消息在集群故障时不丢失。",a:"顺序性；副本"},
+{q:"Canal支持____和增量同步两种模式；Maxwell的优势在于____轻量、配置简单，适合小型项目使用。",a:"全量同步；部署"},
+{q:"Canal可同步MySQL的____、更新、删除等操作，Maxwell支持将解析后的数据以____格式输出至外部系统。",a:"插入；JSON"},
+{q:"ELK日志采集流程中，日志首先由Filebeat采集，然后发送至____，再由其转发至____进行存储。",a:"Logstash；Elasticsearch"},
+{q:"ELK栈中，Elasticsearch基于____实现日志的全文检索，Kibana可通过____展示日志分析结果。",a:"倒排索引；可视化图表"},
+{q:"Kettle中，____是最小的执行单元，____用于管理多个该单元，实现复杂的数据处理任务。",a:"转换；作业"},
+{q:"Kettle支持与多种数据库连接，包括____和____，可实现不同数据源之间的数据同步与转换。",a:"MySQL；Oracle"}
+],
+term:[
+{q:"网络数据采集",a:"指通过一定的技术手段，从互联网网页、接口等数据源中获取所需数据的过程，核心环节包括连接建立、数据提取与存储，是数据预处理的基础步骤。"},
+{q:"Kafka主题",a:"Kafka中用于存储消息的逻辑容器，是消息的分类集合，生产者将消息发送到指定主题，消费者从主题中读取消息，实现消息的分类管理与分发。"},
+{q:"Canal",a:"一款开源的实时数据库采集工具，核心原理是模拟MySQL从库（Slave），监听MySQL的二进制日志，捕获数据库的插入、更新、删除等变更操作，并将变更数据同步至指定目的地。"},
+{q:"ELK日志采集技术栈",a:"由Elasticsearch、Logstash、Kibana三款工具组成的日志采集与分析体系，三者协同实现日志的采集、转发、存储、检索与可视化分析。"},
+{q:"Kettle转换",a:"Kettle工具的核心组件之一，用于定义数据的输入、清洗、转换与输出逻辑，是实现数据处理的最小执行单元，可完成单一的数据处理任务。"},
+{q:"动态网页采集",a:"针对采用JavaScript等技术动态生成内容的网页进行数据采集的方式，需借助Selenium等工具模拟浏览器渲染行为，获取动态加载的目标数据。"},
+{q:"Kafka分区",a:"Kafka主题的细分单元，是消息的实际存储载体，一个主题可包含多个分区，实现消息的分片存储与并行处理，提升消息读写效率。"},
+{q:"Maxwell",a:"一款轻量级的实时数据库变更采集工具，基于MySQL的二进制日志解析数据库变更数据，支持将变更数据发送至Kafka、Redis等消息中间件，配置简单、部署便捷。"},
+{q:"Elasticsearch",a:"ELK技术栈的核心组件，一款分布式全文检索与分析引擎，主要用于存储日志数据，支持全文检索、聚合分析等功能，为日志分析提供高效的数据查询能力。"},
+{q:"Kettle作业",a:"Kettle工具中用于定义数据处理流程的组件，可管理多个转换，设置执行顺序、依赖关系与触发条件，实现复杂的数据处理流程调度。"}
+],
+short:[
+{q:"简述网络数据采集的核心流程，至少包含3个关键环节。",a:"网络数据采集的核心流程：\n(1) 准备阶段：确定数据源、明确采集目标与需求；\n(2) 连接建立：通过HTTP等协议与目标服务器建立连接；\n(3) 数据提取：使用采集工具（如requests、Selenium）提取目标数据；\n(4) 数据清洗（可选）：去除冗余、错误数据；\n(5) 数据存储：将采集到的数据保存至数据库或文件中。"},
+{q:"简述Kafka的核心组件及其各自的主要功能。",a:"Kafka核心组件及功能：\n(1) 生产者：负责发送消息至Kafka主题；\n(2) 主题：用于分类存储消息的逻辑容器；\n(3) 分区：主题的细分单元，实现消息分片存储与并行处理；\n(4) 消费者：从主题中读取并消费消息；\n(5) 消费者组：由多个消费者组成，共同消费一个主题的消息，提升消费效率。"},
+{q:"简述Canal的工作原理，核心步骤是什么？",a:"Canal工作原理核心步骤：\n(1) 模拟MySQL从库，向MySQL主库发送同步请求；\n(2) 监听MySQL的二进制日志，捕获数据库的插入、更新、删除等变更操作；\n(3) 解析二进制日志中的变更数据，转换为指定格式（默认JSON）；\n(4) 将解析后的变更数据同步至Kafka、Redis等指定目的地。"},
+{q:"简述ELK日志采集技术栈的组成及各组件的核心作用。",a:"ELK组件及核心作用：\n(1) Elasticsearch：分布式全文检索引擎，负责存储日志数据、支持全文检索与聚合分析；\n(2) Logstash：日志采集与转发工具，负责采集分散的日志，进行过滤、转换后转发至Elasticsearch；\n(3) Kibana：日志可视化工具，负责将Elasticsearch中的日志数据以图表形式展示，方便用户分析查询。"},
+{q:"简述动态网页采集与静态网页采集的区别，以及各自适用的场景。",a:"区别：\n(1) 静态网页采集：采集内容固定，无需模拟浏览器渲染，工具轻量（如requests），效率高；\n(2) 动态网页采集：内容由JavaScript动态生成，需模拟浏览器渲染（如Selenium），效率略低。\n适用场景：静态网页采集适用于内容不随交互变化的网页（如静态新闻页）；动态网页采集适用于内容实时加载、需交互才能显示的网页（如电商商品列表页）。"},
+{q:"简述Kafka分区的作用及优势。",a:"Kafka分区的作用及优势：\n作用是将主题中的消息分片存储，实现消息的并行读写与负载均衡。\n优势：\n(1) 提升读写效率，多个分区可同时处理消息；\n(2) 实现消息分片，便于海量消息的存储与管理；\n(3) 支持水平扩展，可通过增加分区数量提升系统吞吐量。"},
+{q:"简述Maxwell与Canal的核心区别，各自的适用场景是什么？",a:"Maxwell与Canal的核心区别及适用场景：\n(1) 区别：Canal部署相对复杂，支持全量+增量同步，适合中大型项目；Maxwell部署轻量、配置简单，仅支持增量同步，适合小型项目。\n(2) 适用场景：Canal适用于对数据同步完整性要求高、数据量大的中大型系统；Maxwell适用于小型项目、快速部署需求，对全量同步无要求的场景。"},
+{q:"简述Kettle中作业与转换的区别与联系。",a:"Kettle作业与转换的区别与联系：\n(1) 区别：转换专注于单一数据处理任务（如数据清洗、转换），是最小执行单元；作业用于管理多个转换，设置执行顺序、依赖关系，实现复杂流程调度。\n(2) 联系：作业不能直接处理数据，需调用转换完成数据处理任务；转换可独立运行，也可被作业调用，二者协同实现复杂的数据预处理流程。"}
+],
+complex:[
+{q:"某同学需采集某静态网页的文章内容，无需复杂操作，选择简单采集工具，写出1种合适的工具及2个核心操作步骤。",a:"工具：requests。\n核心步骤：\n(1) 安装requests库，发送HTTP请求获取网页源码；\n(2) 解析源码，提取文章内容字段。"},
+{q:"某系统每小时产生10万条日志，需通过Kafka存储，要求部署简单，设计1个主题，说明应设置多少个分区及核心理由。",a:"分区设置：1个分区。\n理由：每小时10万条日志，数据量小，1个分区可满足需求，部署最简单，无需额外配置多分区。"},
+{q:"已知Maxwell采集MySQL数据的同步延迟为0.5秒/条，若某时刻有80条数据同时变更，请问同步完所有数据需要多少秒？写出计算过程。",a:"计算过程：\n同步时间 = 单条延迟 x 数据条数 = 0.5秒/条 x 80条 = 40秒。"},
+{q:"某ELK部署中，Filebeat每分钟采集300条日志，Logstash每分钟可处理600条日志，Elasticsearch每分钟可存储900条日志，求该ELK栈每分钟最多可采集并存储多少条日志？说明计算依据。",a:"计算依据：\nELK栈处理能力由瓶颈组件决定，Filebeat每分钟采集300条（最小），故最大处理量由Filebeat决定。答案：300条/分钟。"},
+{q:"Kettle处理某批数据，每分钟可清洗400条数据，该批数据共有4800条，清洗完成后需1分钟导出，求从开始清洗到导出完成共需多少分钟？写出计算过程。",a:"计算过程：\n清洗时间 = 4800条 / 400条/分钟 = 12分钟\n总时间 = 清洗时间 + 导出时间 = 12 + 1 = 13分钟。"},
+{q:"采集静态网页数据时，为避免频繁请求被封禁，写出2种简单易操作的反反爬方法，无需复杂配置。",a:"反反爬方法：\n(1) 设置延时请求（每请求1次间隔1-2秒）；\n(2) 模拟浏览器请求头（添加User-Agent）。"},
+{q:"已知Kafka某主题有2个分区，若有1个消费者组成消费者组，说明该消费者会消费几个分区的消息及原因。",a:"消费分区数：2个。\n原因：消费者组中消费者数量小于分区数量时，单个消费者会消费所有分区的消息，确保消息不遗漏。"},
+{q:"Canal同步MySQL数据的速度为每秒120条，若需同步3600条变更数据，且同步前准备时间为10秒，求从准备到同步完成共需多少秒？写出计算过程。",a:"计算过程：\n同步数据时间 = 3600条 / 120条/秒 = 30秒\n总时间 = 准备时间 + 同步时间 = 10 + 30 = 40秒。"},
+{q:"某应用服务器每小时产生1800条日志，使用ELK采集存储，若Filebeat每小时采集量是服务器日志量的1.2倍，求Filebeat每小时可采集多少条日志？写出计算过程。",a:"计算过程：\nFilebeat每小时采集量 = 服务器日志量 x 1.2 = 1800 x 1.2 = 2160条。"},
+{q:"Kettle处理某批数据，每分钟可清洗400条数据，该批数据共有4800条，清洗完成后需1分钟导出，求从开始清洗到导出完成共需多少分钟？写出计算过程。",a:"计算过程：\n清洗时间 = 4800条 / 400条/分钟 = 12分钟\n总时间 = 清洗时间 + 导出时间 = 12 + 1 = 13分钟。"}
+]
+};
+
+var curSection="choice";
+
+function renderNav(){
+  var h="";
+  SECTIONS.forEach(function(s){
+    h+='<button class="nav-btn'+(s.id===curSection?' active':'')+'" data-s="'+s.id+'">'+s.label+'</button>';
+  });
+  document.getElementById("navBar").innerHTML=h;
+  document.getElementById("navBar").addEventListener("click",function(e){
+    var b=e.target.closest("[data-s]");
+    if(!b)return;
+    curSection=b.getAttribute("data-s");
+    document.querySelectorAll(".nav-btn").forEach(function(x){x.classList.remove("active")});
+    b.classList.add("active");
+    renderContent();
+    window.scrollTo({top:0,behavior:"smooth"});
+  });
+}
+
+function renderContent(){
+  var c=document.getElementById("content");
+  var html="";
+  SECTIONS.forEach(function(s){
+    var isActive=s.id===curSection;
+    html+='<div class="section'+(isActive?' active':'')+'" id="sec-'+s.id+'">';
+    html+='<div class="sec-title"><div class="sec-icon '+s.iconCls+'">'+s.icon+'</div><h2>'+s.label+'</h2><span class="count">'+s.count+'题</span></div>';
+    var items=DATA[s.id];
+    if(s.id==="fill"){
+      items.forEach(function(d,i){
+        html+='<div class="card">';
+        html+='<div class="card-q"><span class="card-num">'+(i+1)+'</span>'+d.q+'</div>';
+        html+='<button class="fill-toggle" onclick="toggleFill(this)">查看答案</button>';
+        html+='<div class="fill-answer"><div class="ans-label">Answer</div>'+d.a+'</div>';
+        html+='</div>';
+      });
+    }else if(s.id==="term"){
+      items.forEach(function(d,i){
+        html+='<div class="card">';
+        html+='<div class="card-q"><span class="card-num">'+(i+1)+'</span>'+d.q+'</div>';
+        html+='<button class="fill-toggle" onclick="toggleFill(this)">查看答案</button>';
+        html+='<div class="fill-answer"><div class="ans-label">Answer</div>'+d.a+'</div>';
+        html+='</div>';
+      });
+    }else if(s.id==="short"||s.id==="complex"){
+      items.forEach(function(d,i){
+        html+='<div class="card">';
+        html+='<div class="card-q"><span class="card-num">'+(i+1)+'</span>'+d.q+'</div>';
+        html+='<button class="fill-toggle" onclick="toggleFill(this)">查看答案</button>';
+        html+='<div class="fill-answer"><div class="ans-label">Answer</div>'+d.a.replace(/\n/g,'<br>')+'</div>';
+        html+='</div>';
+      });
+    }else if(s.id==="choice"){
+      var letters="ABCD";
+      items.forEach(function(d,i){
+        html+='<div class="card">';
+        html+='<div class="card-q"><span class="card-num">'+(i+1)+'</span>'+d.q+'</div>';
+        html+='<div class="opts">';
+        d.o.forEach(function(opt,j){
+          html+='<div class="opt'+(j===d.a?' is-ans':'')+'">'+opt+'</div>';
+        });
+        html+='</div></div>';
+      });
+    }
+    html+='</div>';
+  });
+  c.innerHTML=html;
+}
+
+function toggleFill(btn){
+  var ans=btn.nextElementSibling;
+  ans.classList.toggle("show");
+  btn.textContent=ans.classList.contains("show")?"收起答案":"查看答案";
+}
+
+function initTheme(){
+  var saved=localStorage.getItem("theme")||"dark";
+  document.documentElement.setAttribute("data-theme",saved);
+  updateThemeBtn(saved);
+}
+function toggleTheme(){
+  var cur=document.documentElement.getAttribute("data-theme");
+  var next=cur==="dark"?"light":"dark";
+  document.documentElement.setAttribute("data-theme",next);
+  localStorage.setItem("theme",next);
+  updateThemeBtn(next);
+}
+function updateThemeBtn(t){
+  document.getElementById("themeBtn").innerHTML=t==="dark"?"&#9789;":"&#9728;";
+}
+document.getElementById("themeBtn").addEventListener("click",toggleTheme);
+
+initTheme();
+renderNav();
+renderContent();
+</script>
+</body>
+</html>
