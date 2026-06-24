@@ -100,11 +100,6 @@ body{font-family:'Noto Sans SC','Inter',sans-serif;background:var(--bg);color:va
 .fill-answer{display:none;margin-top:10px;padding:12px 16px;border-radius:10px;background:var(--green-bg);border:1px solid var(--green-border);font-size:13px;line-height:1.7;color:var(--text2)}
 .fill-answer.show{display:block}
 
-.hide-btn{display:inline-flex;align-items:center;gap:6px;margin-top:12px;padding:6px 14px;border-radius:20px;border:1px solid var(--card-border);background:var(--surface);color:var(--text2);font-size:12px;cursor:pointer;transition:all .2s;font-family:inherit}
-.hide-btn:hover{border-color:var(--accent);color:var(--accent2)}
-.hide-content{transition:all .3s ease;overflow:hidden;max-height:3000px;opacity:1}
-.hide-content.hidden{display:none}
-
 /* FOOTER */
 .footer{text-align:center;padding:32px 0;color:var(--text3);font-size:12px;border-top:1px solid var(--card-border);margin-top:32px}
 
@@ -222,16 +217,16 @@ short:[
 {q:"简述Kettle中作业与转换的区别与联系。",a:"转换：最小执行单元，处理单一任务；作业：管理多个转换，设置流程调度。作业调用转换，转换可独立运行"}
 ],
 complex:[
-{q:"某同学需采集某静态网页的文章内容，无需复杂操作，选择简单采集工具，写出1种合适的工具及2个核心操作步骤。",a:"工具：requests。\n核心步骤：\n(1) 安装requests库，发送HTTP请求获取网页源码；\n(2) 解析源码，提取文章内容字段。"},
-{q:"某系统每小时产生10万条日志，需通过Kafka存储，要求部署简单，设计1个主题，说明应设置多少个分区及核心理由。",a:"分区设置：1个分区。\n理由：每小时10万条日志，数据量小，1个分区可满足需求，部署最简单，无需额外配置多分区。"},
-{q:"已知Maxwell采集MySQL数据的同步延迟为0.5秒/条，若某时刻有80条数据同时变更，请问同步完所有数据需要多少秒？写出计算过程。",a:"计算过程：\n同步时间 = 单条延迟 x 数据条数 = 0.5秒/条 x 80条 = 40秒。"},
-{q:"某ELK部署中，Filebeat每分钟采集300条日志，Logstash每分钟可处理600条日志，Elasticsearch每分钟可存储900条日志，求该ELK栈每分钟最多可采集并存储多少条日志？说明计算依据。",a:"计算依据：\nELK栈处理能力由瓶颈组件决定，Filebeat每分钟采集300条（最小），故最大处理量由Filebeat决定。答案：300条/分钟。"},
-{q:"Kettle处理某批数据，每分钟可清洗400条数据，该批数据共有4800条，清洗完成后需1分钟导出，求从开始清洗到导出完成共需多少分钟？写出计算过程。",a:"计算过程：\n清洗时间 = 4800条 / 400条/分钟 = 12分钟\n总时间 = 清洗时间 + 导出时间 = 12 + 1 = 13分钟。"},
-{q:"采集静态网页数据时，为避免频繁请求被封禁，写出2种简单易操作的反反爬方法，无需复杂配置。",a:"反反爬方法：\n(1) 设置延时请求（每请求1次间隔1-2秒）；\n(2) 模拟浏览器请求头（添加User-Agent）。"},
-{q:"已知Kafka某主题有2个分区，若有1个消费者组成消费者组，说明该消费者会消费几个分区的消息及原因。",a:"消费分区数：2个。\n原因：消费者组中消费者数量小于分区数量时，单个消费者会消费所有分区的消息，确保消息不遗漏。"},
-{q:"Canal同步MySQL数据的速度为每秒120条，若需同步3600条变更数据，且同步前准备时间为10秒，求从准备到同步完成共需多少秒？写出计算过程。",a:"计算过程：\n同步数据时间 = 3600条 / 120条/秒 = 30秒\n总时间 = 准备时间 + 同步时间 = 10 + 30 = 40秒。"},
-{q:"某应用服务器每小时产生1800条日志，使用ELK采集存储，若Filebeat每小时采集量是服务器日志量的1.2倍，求Filebeat每小时可采集多少条日志？写出计算过程。",a:"计算过程：\nFilebeat每小时采集量 = 服务器日志量 x 1.2 = 1800 x 1.2 = 2160条。"},
-{q:"Kettle处理某批数据，每分钟可清洗400条数据，该批数据共有4800条，清洗完成后需1分钟导出，求从开始清洗到导出完成共需多少分钟？写出计算过程。",a:"计算过程：\n清洗时间 = 4800条 / 400条/分钟 = 12分钟\n总时间 = 清洗时间 + 导出时间 = 12 + 1 = 13分钟。"}
+{q:"某同学需采集某静态网页的文章内容，无需复杂操作，选择简单采集工具，写出1种合适的工具及2个核心操作步骤。",a:"requests。步骤：① 发HTTP请求获取源码；② 解析提取内容"},
+{q:"某系统每小时产生10万条日志，需通过Kafka存储，要求部署简单，设计1个主题，说明应设置多少个分区及核心理由。",a:"1个分区。数据量小，1个分区可满足，部署最简单"},
+{q:"已知Maxwell采集MySQL数据的同步延迟为0.5秒/条，若某时刻有80条数据同时变更，请问同步完所有数据需要多少秒？写出计算过程。",a:"0.5 x 80 = 40秒"},
+{q:"某ELK部署中，Filebeat每分钟采集300条日志，Logstash每分钟可处理600条日志，Elasticsearch每分钟可存储900条日志，求该ELK栈每分钟最多可采集并存储多少条日志？说明计算依据。",a:"300条/分钟。由瓶颈组件Filebeat（最小值）决定"},
+{q:"Kettle处理某批数据，每分钟可清洗400条数据，该批数据共有4800条，清洗完成后需1分钟导出，求从开始清洗到导出完成共需多少分钟？写出计算过程。",a:"4800/400=12分钟，12+1=13分钟"},
+{q:"采集静态网页数据时，为避免频繁请求被封禁，写出2种简单易操作的反反爬方法，无需复杂配置。",a:"① 延时请求（间隔1-2秒）；② 模拟User-Agent请求头"},
+{q:"已知Kafka某主题有2个分区，若有1个消费者组成消费者组，说明该消费者会消费几个分区的消息及原因。",a:"2个。消费者数<分区数时，单个消费者消费所有分区"},
+{q:"Canal同步MySQL数据的速度为每秒120条，若需同步3600条变更数据，且同步前准备时间为10秒，求从准备到同步完成共需多少秒？写出计算过程。",a:"3600/120=30秒，10+30=40秒"},
+{q:"某应用服务器每小时产生1800条日志，使用ELK采集存储，若Filebeat每小时采集量是服务器日志量的1.2倍，求Filebeat每小时可采集多少条日志？写出计算过程。",a:"1800 x 1.2 = 2160条"},
+{q:"Kettle处理某批数据，每分钟可清洗400条数据，该批数据共有4800条，清洗完成后需1分钟导出，求从开始清洗到导出完成共需多少分钟？写出计算过程。",a:"4800/400=12分钟，12+1=13分钟"}
 ]
 };
 
@@ -265,45 +260,36 @@ function renderContent(){
     if(s.id==="fill"){
       items.forEach(function(d,i){
         html+='<div class="card">';
-        html+='<div class="card-q"><span class="card-num">'+(i+1)+'</span><span>'+d.q+'</span></div>';
-        html+='<div class="hide-content">';
+        html+='<div class="card-q"><span class="card-num">'+(i+1)+'</span>'+d.q+'</div>';
         html+='<button class="fill-toggle" onclick="toggleFill(this)">查看答案</button>';
         html+='<div class="fill-answer"><div class="ans-label">Answer</div>'+d.a+'</div>';
-        html+='<button class="hide-btn" onclick="toggleHide(this)">隐藏答案</button>';
-        html+='</div></div>';
+        html+='</div>';
       });
     }else if(s.id==="term"){
       items.forEach(function(d,i){
         html+='<div class="card">';
-        html+='<div class="card-q"><span class="card-num">'+(i+1)+'</span><span>'+d.q+'</span></div>';
-        html+='<div class="hide-content">';
+        html+='<div class="card-q"><span class="card-num">'+(i+1)+'</span>'+d.q+'</div>';
         html+='<button class="fill-toggle" onclick="toggleFill(this)">查看答案</button>';
         html+='<div class="fill-answer"><div class="ans-label">Answer</div>'+d.a+'</div>';
-        html+='<button class="hide-btn" onclick="toggleHide(this)">隐藏答案</button>';
-        html+='</div></div>';
+        html+='</div>';
       });
     }else if(s.id==="short"||s.id==="complex"){
       items.forEach(function(d,i){
         html+='<div class="card">';
-        html+='<div class="card-q"><span class="card-num">'+(i+1)+'</span><span>'+d.q+'</span></div>';
-        html+='<div class="hide-content">';
+        html+='<div class="card-q"><span class="card-num">'+(i+1)+'</span>'+d.q+'</div>';
         html+='<button class="fill-toggle" onclick="toggleFill(this)">查看答案</button>';
         html+='<div class="fill-answer"><div class="ans-label">Answer</div>'+d.a.replace(/\n/g,'<br>')+'</div>';
-        html+='<button class="hide-btn" onclick="toggleHide(this)">隐藏答案</button>';
-        html+='</div></div>';
+        html+='</div>';
       });
     }else if(s.id==="choice"){
       var letters="ABCD";
       items.forEach(function(d,i){
         html+='<div class="card">';
-        html+='<div class="card-q"><span class="card-num">'+(i+1)+'</span><span>'+d.q+'</span></div>';
-        html+='<div class="hide-content">';
+        html+='<div class="card-q"><span class="card-num">'+(i+1)+'</span>'+d.q+'</div>';
         html+='<div class="opts">';
         d.o.forEach(function(opt,j){
           html+='<div class="opt clickable" data-qi="'+i+'" data-oi="'+j+'">'+opt+'</div>';
         });
-        html+='</div>';
-        html+='<button class="hide-btn" onclick="toggleHide(this)">隐藏选项</button>';
         html+='</div></div>';
       });
     }
@@ -316,13 +302,6 @@ function toggleFill(btn){
   var ans=btn.nextElementSibling;
   ans.classList.toggle("show");
   btn.textContent=ans.classList.contains("show")?"收起答案":"查看答案";
-}
-
-function toggleHide(btn){
-  var content=btn.closest(".hide-content");
-  content.classList.toggle("hidden");
-  var isHidden=content.classList.contains("hidden");
-  btn.textContent=isHidden?"显示答案":"隐藏答案";
 }
 
 var choiceAnswered={};
