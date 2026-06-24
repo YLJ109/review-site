@@ -89,6 +89,10 @@ body{font-family:'Noto Sans SC','Inter',sans-serif;background:var(--bg);color:va
 .opt-letter{font-weight:600;color:var(--accent2);margin-right:8px}
 .opt.is-ans{border-color:var(--green);background:var(--green-bg);color:var(--text)}
 .opt.is-ans .opt-letter{color:var(--green)}
+.opt.is-wrong{border-color:#ff6b6b;background:rgba(255,107,107,.08);color:var(--text)}
+.opt.is-wrong .opt-letter{color:#ff6b6b}
+.opt.disabled{pointer-events:none;cursor:default;opacity:.85}
+.opt.clickable{cursor:pointer}
 
 /* FILL answer toggle */
 .fill-toggle{display:inline-flex;align-items:center;gap:6px;margin-top:10px;padding:6px 14px;border-radius:20px;border:1px solid var(--card-border);background:var(--surface);color:var(--text2);font-size:12px;cursor:pointer;transition:all .2s;font-family:inherit}
@@ -284,7 +288,7 @@ function renderContent(){
         html+='<div class="card-q"><span class="card-num">'+(i+1)+'</span>'+d.q+'</div>';
         html+='<div class="opts">';
         d.o.forEach(function(opt,j){
-          html+='<div class="opt'+(j===d.a?' is-ans':'')+'">'+opt+'</div>';
+          html+='<div class="opt clickable" data-qi="'+i+'" data-oi="'+j+'">'+opt+'</div>';
         });
         html+='</div></div>';
       });
@@ -299,6 +303,29 @@ function toggleFill(btn){
   ans.classList.toggle("show");
   btn.textContent=ans.classList.contains("show")?"收起答案":"查看答案";
 }
+
+var choiceAnswered={};
+document.getElementById("quiz").addEventListener("click",function(e){
+  var t=e.target.closest("[data-oi]");
+  if(!t)return;
+  var qi=t.getAttribute("data-qi"),oi=+t.getAttribute("data-oi");
+  if(choiceAnswered[qi])return;
+  choiceAnswered[qi]=true;
+  var items=DATA.choice;
+  var correct=items[qi].a;
+  var card=t.closest(".card");
+  var opts=card.querySelectorAll(".opt");
+  opts.forEach(function(o){
+    o.classList.remove("clickable");
+    o.classList.add("disabled");
+  });
+  if(oi===correct){
+    t.classList.add("is-ans");
+  }else{
+    t.classList.add("is-wrong");
+    opts[correct].classList.add("is-ans");
+  }
+});
 
 function initTheme(){
   var saved=localStorage.getItem("theme")||"dark";
