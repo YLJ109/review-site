@@ -262,7 +262,7 @@ function renderContent(){
         html+='<div class="card">';
         html+='<div class="card-q"><span class="card-num">'+(i+1)+'</span>'+d.q+'</div>';
         html+='<button class="fill-toggle" onclick="toggleFill(this)">查看答案</button>';
-        html+='<div class="fill-answer"><div class="ans-label">Answer</div>'+d.a+'</div>';
+        html+='<div class="fill-answer">'+d.a+'</div>';
         html+='</div>';
       });
     }else if(s.id==="term"){
@@ -270,7 +270,7 @@ function renderContent(){
         html+='<div class="card">';
         html+='<div class="card-q"><span class="card-num">'+(i+1)+'</span>'+d.q+'</div>';
         html+='<button class="fill-toggle" onclick="toggleFill(this)">查看答案</button>';
-        html+='<div class="fill-answer"><div class="ans-label">Answer</div>'+d.a+'</div>';
+        html+='<div class="fill-answer">'+d.a+'</div>';
         html+='</div>';
       });
     }else if(s.id==="short"||s.id==="complex"){
@@ -278,7 +278,7 @@ function renderContent(){
         html+='<div class="card">';
         html+='<div class="card-q"><span class="card-num">'+(i+1)+'</span>'+d.q+'</div>';
         html+='<button class="fill-toggle" onclick="toggleFill(this)">查看答案</button>';
-        html+='<div class="fill-answer"><div class="ans-label">Answer</div>'+d.a.replace(/\n/g,'<br>')+'</div>';
+        html+='<div class="fill-answer">'+d.a.replace(/\n/g,'<br>')+'</div>';
         html+='</div>';
       });
     }else if(s.id==="choice"){
