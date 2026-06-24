@@ -319,10 +319,10 @@ function toggleFill(btn){
 }
 
 function toggleHide(btn){
-  var content=btn.previousElementSibling;
+  var content=btn.closest(".hide-content");
   content.classList.toggle("hidden");
-  btn.textContent=content.classList.contains("hidden")?"显示选项":"隐藏选项";
-  if(btn.textContent==="隐藏选项")btn.textContent=content.querySelector(".fill-answer")?"隐藏答案":"隐藏选项";
+  var isHidden=content.classList.contains("hidden");
+  btn.textContent=isHidden?"显示答案":"隐藏答案";
 }
 
 var choiceAnswered={};
