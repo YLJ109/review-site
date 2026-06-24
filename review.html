@@ -102,8 +102,9 @@ body{font-family:'Noto Sans SC','Inter',sans-serif;background:var(--bg);color:va
 
 .hide-btn{display:inline-flex;align-items:center;gap:6px;margin-top:12px;padding:6px 14px;border-radius:20px;border:1px solid var(--card-border);background:var(--surface);color:var(--text2);font-size:12px;cursor:pointer;transition:all .2s;font-family:inherit}
 .hide-btn:hover{border-color:var(--accent);color:var(--accent2)}
-.hide-content{transition:all .3s ease;overflow:hidden}
-.hide-content.hidden{max-height:0!important;opacity:0;margin:0!important;padding:0!important;border:none!important}
+.hide-content{transition:all .3s ease;overflow:hidden;max-height:3000px;opacity:1}
+.hide-content.hidden{max-height:0!important;opacity:0;padding-top:0!important;padding-bottom:0!important;margin-top:0!important;margin-bottom:0!important}
+.hide-content.hidden>*{margin:0!important;padding:0!important;border:none!important}
 
 /* FOOTER */
 .footer{text-align:center;padding:32px 0;color:var(--text3);font-size:12px;border-top:1px solid var(--card-border);margin-top:32px}
